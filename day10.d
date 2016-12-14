@@ -10,8 +10,16 @@ void main(string[] args)
 {
   auto input = "day10.1.input".File.byLine.map!(line => line.to!string).array.getBots();
   
-  //input.each!writeln;
   input.findComparingBot(17, 61).writeln;
+  
+  auto next = input.iterate;
+  while (next != null)
+  {
+    input = next;
+    next.iterate;
+  }
+  
+  input.writeln;
 }
 
 unittest
