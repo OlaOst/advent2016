@@ -10,12 +10,14 @@ alias ScreenDef = dchar[][];
 
 void main(string[] args)
 {
-  //ScreenDef screen = '.';
+  ScreenDef screen = dchar('.').repeat(50).array.repeat(6).array;
   
-  //foreach (line; "day8.1.input".File.byLine)
-    //screen.update(line);
+  foreach (line; "day8.1.input".File.byLine)
+    screen = screen.update(line);
   
-  //screen.each!writeln;
+  screen.each!writeln;
+  
+  screen.map!(line => line.count!(pixel => pixel == '#')).sum.writeln;
 }
 
 unittest
@@ -24,31 +26,32 @@ unittest
   test.each!writeln;
   writeln;
   
-  test.update("rect 3x2");
+  test = test.update("rect 3x2");
   test.each!writeln;
   writeln;
   
-  test.update("rotate column x=1 by 1");
+  test = test.update("rotate column x=1 by 1");
   test.each!writeln;
   writeln;
   
-  test.update("rotate row y=0 by 4");
+  test = test.update("rotate row y=0 by 4");
   test.each!writeln;
   writeln;
   
-  test.update("rotate column x=1 by 1");
+  test = test.update("rotate column x=1 by 1");
   test.each!writeln;
   writeln;
   
-  //test.update("rect 3x2");
-  //test.writeln;
+  test = test.update("rotate column x=1 by 3");
+  test.each!writeln;
+  writeln;
 }
 ScreenDef update(Input)(const ScreenDef screen, Input instruction)
 {
   //auto output = screen.dup.joiner('\n');
   dchar[][] output = cast(dchar[][])(screen.map!(line => line.array).array);
   
-  //writeln(instruction);
+  writeln(instruction);
   
   if (instruction.findSkip("rect "))
   {
@@ -71,7 +74,7 @@ ScreenDef update(Input)(const ScreenDef screen, Input instruction)
     {
       auto coords = instruction.splitter(" by ").map!(c => c.to!int).array;
       
-      auto row = screen[coords[0]];
+      auto row = screen[coords[0]].dup;
       auto pixels = coords[1] % 50;
       
       bringToFront(row[pixels..$], row[0..pixels]);
@@ -82,7 +85,7 @@ ScreenDef update(Input)(const ScreenDef screen, Input instruction)
     {
       auto coords = instruction.splitter(" by ").map!(c => c.to!int).array;
       
-      auto flipped = screen.transposed.map!(line => line.array).array;
+      auto flipped = output.transposed.map!(line => line.array).array;
       
       auto col = flipped[coords[0]];
       auto pixels = coords[1] % 6;
